@@ -1,35 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import Card from '../Cards';
+import UseFetch from '../UseFetch';
 
 const FakeApiStore = () => {
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState(false)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios("http://localhost:3000/posts");
-        setData(response.data);
-        setIsLoading(false); 
-      } catch (error) {
-        console.log(error);
-        setIsLoading(false)
-      }
-    };
+  const url = 'http://localhost:3000/posts';
 
-    fetchData();
-  }, []); 
+  const Callback = (data) => {
+    if(!status){
+      console.log(data);
+      setData(data);
+      setStatus(true)
+    }
+
+
+  };
+
+  UseFetch(url, Callback);
 
   return (
     <>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
+      {data &&
         data.map((item) => (
-            <Card key={item.id} {...item}/>
-        ))
-      )}
+          <ul key={item.id}>
+            <li>{item.title}</li>
+          </ul>
+        ))}
     </>
   );
 };
